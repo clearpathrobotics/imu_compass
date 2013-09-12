@@ -1,64 +1,4 @@
-#include "ros/ros.h"
-#include "tf/tf.h"
-#include <tf/transform_listener.h>
-
-#include "sensor_msgs/Imu.h"
-#include "geometry_msgs/Vector3Stamped.h"
-#include "std_msgs/Float32.h"
-
-#define PI 3.14159
-
-class IMUCompass {
-
-private:
-	ros::NodeHandle node_;
-	ros::Subscriber imu_sub_;
-	ros::Subscriber mag_sub_;
-	ros::Publisher imu_pub_;
-	ros::Publisher compass_pub_;
-	ros::Publisher raw_compass_pub_;
-
-	tf::TransformListener listener;
-	ros::Timer debug_timer;
-
-	void imuCallback(const sensor_msgs::ImuConstPtr& data);
-	void magCallback(const geometry_msgs::Vector3StampedConstPtr& data);
-	void debugCallback(const ros::TimerEvent&);
-	void repackageImuPublish(tf::StampedTransform);
-
-	//Heading Filter functions
-	void initFilter(double heading_meas); //initialize heading fiter
-	bool first_mag_reading; //signifies receiving the first magnetometer message
-	bool first_gyro_reading; //signifies receiving the first gyroscope message
-	bool filter_initialized; //after receiving the first measurement, make sure the filter is initialized
-	bool gyro_update_complete; //sigfnifies that a gyro update (motion model update) has gone through
-
-	double mag_zero_x, mag_zero_y, mag_zero_z;
-
-	sensor_msgs::Imu curr_imu_reading;
-
-	//Heading Filter Variables
-
-	//State and Variance
-	double curr_heading;
-	double curr_heading_variance;
-	double sensor_timeout;
-
-	//Motion Update Variables
-	double heading_prediction;
-	double heading_variance_prediction;
-	double heading_prediction_variance;
-	double last_motion_update_time;
-	double last_measurement_update_time;
-
-	//Measurement Update Variables
-	double yaw_meas_variance;
-
-public:
-	IMUCompass(ros::NodeHandle &n);
-	~IMUCompass() {
-	 }
-};
+#include "imu_compass/imu_compass.h"
 
 IMUCompass::IMUCompass(ros::NodeHandle &n):node_(n) 
 {
@@ -114,9 +54,8 @@ void IMUCompass::imuCallback(const sensor_msgs::ImuConstPtr& data) {
 	geometry_msgs::Vector3 gyro_vector;
 	geometry_msgs::Vector3 gyro_vector_transformed;
 	gyro_vector = data->angular_velocity;
-//	gyro_vector.header = data->header;
-
-	if(!first_gyro_reading) 
+	
+    if(!first_gyro_reading) 
 		first_gyro_reading = true;
 
 	double dt = ros::Time::now().toSec() - last_motion_update_time;
@@ -178,14 +117,13 @@ void IMUCompass::magCallback(const geometry_msgs::Vector3StampedConstPtr& data) 
 	//Compensate for hard iron
 	double mag_x = imu_mag_transformed.x - mag_zero_x;
 	double mag_y = imu_mag_transformed.y - mag_zero_y;
-	double mag_z = imu_mag_transformed.z - mag_zero_z;
+	double mag_z = imu_mag_transformed.z; //calibration is purely 2D
 
 	tf::Quaternion q;
 	tf::quaternionMsgToTF(curr_imu_reading.orientation,q);
 	tf::Transform curr_imu_meas;
 	curr_imu_meas = tf::Transform(q,tf::Vector3(0,0,0));
 	curr_imu_meas = curr_imu_meas * transform;
-
 
 	//Till Compensation
 	tf::Matrix3x3 temp(curr_imu_meas.getRotation());
@@ -246,7 +184,6 @@ void IMUCompass::repackageImuPublish(tf::StampedTransform transform)
     o_imu_reading = o_imu_reading * transform;
 	imu_reading = o_imu_reading.getRotation();
 
-
 	//Acquire Quaternion that is the difference between the two readings	
 	tf::Quaternion compass_yaw = tf::createQuaternionFromRPY(0.0,0.0,compass_heading);
 	tf::Quaternion diff_yaw = tf::createQuaternionFromRPY(0.0,0.0, compass_heading - tf::getYaw(imu_reading));
@@ -276,7 +213,7 @@ void IMUCompass::initFilter(double heading_meas) {
 
 int main(int argc, char **argv)
 {
-	ros::init(argc, argv, "um6_compass");
+	ros::init(argc, argv, "imu_compass");
 	ros::NodeHandle node;	
 	IMUCompass imu_heading_estimator(node);
 	ros::spin();
