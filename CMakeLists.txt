@@ -74,6 +74,10 @@ include_directories(
 ## Declare a cpp executable
 # add_executable(imu_compass_node src/imu_compass_node.cpp)
 
+add_executable(imu_compass src/imu_compass.cpp)
+target_link_libraries(imu_compass ${catkin_LIBRARIES})
+
+
 ## Add cmake target dependencies of the executable/library
 ## as an example, message headers may need to be generated before nodes
 # add_dependencies(imu_compass_node imu_compass_generate_messages_cpp)
@@ -89,6 +93,11 @@ include_directories(
 
 # all install targets should use catkin DESTINATION variables
 # See http://ros.org/doc/api/catkin/html/adv_user_guide/variables.html
+
+install(TARGETS imu_compass
+  RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+)
+
 
 ## Mark executable scripts (Python etc.) for installation
 ## in contrast to setup.py, you can choose the destination
