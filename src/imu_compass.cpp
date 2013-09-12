@@ -8,7 +8,7 @@
 
 #define PI 3.14159
 
-class UM6Compass {
+class IMUCompass {
 
 private:
 	ros::NodeHandle node_;
@@ -55,12 +55,12 @@ private:
 	double yaw_meas_variance;
 
 public:
-	UM6Compass(ros::NodeHandle &n);
-	~UM6Compass() {
+	IMUCompass(ros::NodeHandle &n);
+	~IMUCompass() {
 	 }
 };
 
-UM6Compass::UM6Compass(ros::NodeHandle &n):node_(n) 
+IMUCompass::IMUCompass(ros::NodeHandle &n):node_(n) 
 {
 	//Acquire Parameters
 	mag_zero_x = 0.0;
@@ -75,8 +75,8 @@ UM6Compass::UM6Compass(ros::NodeHandle &n):node_(n)
 	heading_prediction_variance = 0.01;
 
 	//Setup Subscribers
-	imu_sub_ = node_.subscribe("/imu/data",1000, &UM6Compass::imuCallback, this);
-	mag_sub_ = node_.subscribe("/imu/mag",1000, &UM6Compass::magCallback, this);
+	imu_sub_ = node_.subscribe("/imu/data",1000, &IMUCompass::imuCallback, this);
+	mag_sub_ = node_.subscribe("/imu/mag",1000, &IMUCompass::magCallback, this);
 	imu_pub_ = node_.advertise<sensor_msgs::Imu>("/imu/data_compass",1);
 	compass_pub_ = node_.advertise<std_msgs::Float32>("/imu/compass_heading",1);
 	raw_compass_pub_ = node_.advertise<std_msgs::Float32>("/imu/raw_compass_heading",1);
@@ -85,12 +85,12 @@ UM6Compass::UM6Compass(ros::NodeHandle &n):node_(n)
 	first_gyro_reading = false;
 	gyro_update_complete = false;
 	last_motion_update_time = ros::Time::now().toSec();
-	debug_timer = node_.createTimer(ros::Duration(1), &UM6Compass::debugCallback,this);
+	debug_timer = node_.createTimer(ros::Duration(1), &IMUCompass::debugCallback,this);
 
 	ROS_INFO("Compass Estimator Started");
 }
 
-void UM6Compass::debugCallback(const ros::TimerEvent&) { 
+void IMUCompass::debugCallback(const ros::TimerEvent&) { 
 	if (!first_gyro_reading)
 		ROS_WARN("Waiting for IMU data, no gyroscope data available)");
 	if (!first_mag_reading)
@@ -108,7 +108,7 @@ void UM6Compass::debugCallback(const ros::TimerEvent&) {
 	}
 }
 
-void UM6Compass::imuCallback(const sensor_msgs::ImuConstPtr& data) { 
+void IMUCompass::imuCallback(const sensor_msgs::ImuConstPtr& data) { 
 
 	//Transform Data and get the yaw direction
 	geometry_msgs::Vector3 gyro_vector;
@@ -151,7 +151,7 @@ void UM6Compass::imuCallback(const sensor_msgs::ImuConstPtr& data) {
 }
 
 
-void UM6Compass::magCallback(const geometry_msgs::Vector3StampedConstPtr& data) {
+void IMUCompass::magCallback(const geometry_msgs::Vector3StampedConstPtr& data) {
 
 	geometry_msgs::Vector3 imu_mag = data->vector; 
 	geometry_msgs::Vector3 imu_mag_transformed;
@@ -232,7 +232,7 @@ void UM6Compass::magCallback(const geometry_msgs::Vector3StampedConstPtr& data) 
 }
 
 
-void UM6Compass::repackageImuPublish(tf::StampedTransform transform)
+void IMUCompass::repackageImuPublish(tf::StampedTransform transform)
 {	
 
 	//Get Current IMU reading and Compass heading
@@ -266,7 +266,7 @@ void UM6Compass::repackageImuPublish(tf::StampedTransform transform)
 	imu_pub_.publish(curr_imu_reading);	
 }
 
-void UM6Compass::initFilter(double heading_meas) {
+void IMUCompass::initFilter(double heading_meas) {
 	curr_heading = heading_meas;
 	curr_heading_variance = 1; //not very sure
 	filter_initialized = true;
@@ -278,7 +278,7 @@ int main(int argc, char **argv)
 {
 	ros::init(argc, argv, "um6_compass");
 	ros::NodeHandle node;	
-	UM6Compass um6_heading_estimator(node);
+	IMUCompass imu_heading_estimator(node);
 	ros::spin();
 	return 0;
 }
