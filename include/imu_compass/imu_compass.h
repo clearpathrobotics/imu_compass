@@ -18,8 +18,8 @@ private:
 	ros::Publisher compass_pub_;
 	ros::Publisher raw_compass_pub_;
 
-	tf::TransformListener listener;
-	ros::Timer debug_timer;
+	tf::TransformListener listener_;
+	ros::Timer debug_timer_;
 
 	void imuCallback(const sensor_msgs::ImuConstPtr& data);
 	void magCallback(const geometry_msgs::Vector3StampedConstPtr& data);
@@ -28,31 +28,31 @@ private:
 
 	//Heading Filter functions
 	void initFilter(double heading_meas); //initialize heading fiter
-	bool first_mag_reading; //signifies receiving the first magnetometer message
-	bool first_gyro_reading; //signifies receiving the first gyroscope message
-	bool filter_initialized; //after receiving the first measurement, make sure the filter is initialized
-	bool gyro_update_complete; //sigfnifies that a gyro update (motion model update) has gone through
+	bool first_mag_reading_; //signifies receiving the first magnetometer message
+	bool first_gyro_reading_; //signifies receiving the first gyroscope message
+	bool filter_initialized_; //after receiving the first measurement, make sure the filter is initialized
+	bool gyro_update_complete_; //sigfnifies that a gyro update (motion model update) has gone through
 
-	double mag_zero_x, mag_zero_y, mag_zero_z;
+	double mag_zero_x_, mag_zero_y_, mag_zero_z_;
 
-	sensor_msgs::Imu curr_imu_reading;
+	sensor_msgs::Imu curr_imu_reading_;
 
 	//Heading Filter Variables
 
 	//State and Variance
-	double curr_heading;
-	double curr_heading_variance;
-	double sensor_timeout;
+	double curr_heading_;
+	double curr_heading_variance_;
+	double sensor_timeout_;
 
 	//Motion Update Variables
-	double heading_prediction;
-	double heading_variance_prediction;
-	double heading_prediction_variance;
-	double last_motion_update_time;
-	double last_measurement_update_time;
+	double heading_prediction_;
+	double heading_variance_prediction_;
+	double heading_prediction_variance_;
+	double last_motion_update_time_;
+	double last_measurement_update_time_;
 
 	//Measurement Update Variables
-	double yaw_meas_variance;
+	double yaw_meas_variance_;
 
 public:
 	IMUCompass(ros::NodeHandle &n);
