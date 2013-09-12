@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<package>
+  <name>imu_compass</name>
+  <version>0.0.0</version>
+  <description>Node to combine IMU data (accelerometers and gyroscopes) with Compass data (magnetometers) for a cleaner reading of a Vehicles Heading</description>
+  <maintainer email="pmukherj@clearpathrobotics.com">Prasenjit Mukherjee</maintainer>
+
+
+  <license>BSD</license>
+
+
+  <!-- Example: -->
+  <!-- <url type="website">http://ros.org/wiki/imu_compass</url> -->
+
+  <buildtool_depend>catkin</buildtool_depend>
+  <build_depend>geometry_msgs</build_depend>
+  <build_depend>sensor_msgs</build_depend>
+  <build_depend>std_msgs</build_depend>
+  <build_depend>tf</build_depend>
+  <run_depend>geometry_msgs</run_depend>
+  <run_depend>sensor_msgs</run_depend>
+  <run_depend>std_msgs</run_depend>
+  <run_depend>tf</run_depend>
+
+
+  <!-- The export tag contains other, unspecified, tags -->
+  <export>
+
+  </export>
+</package>
