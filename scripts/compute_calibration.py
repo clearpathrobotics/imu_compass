@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 
-import roslib; roslib.load_manifest('um6')
-import rosbag, rospy
+import rosbag
 
 import datetime
 from tf.msg import tfMessage
@@ -11,13 +10,12 @@ from numpy import mean, array, hypot, diff, convolve, arange, sin, cos, ones, pi
 from tf.transformations import euler_from_quaternion,quaternion_from_euler,quaternion_multiply,quaternion_matrix
 import tf
 
-
 # Prompt user if scipy is missing.
 try:
   from scipy import optimize
 except ImportError:
-  rospy.logfatal("This script requires scipy be available.")
-  rospy.logfatal("On Ubuntu: sudo apt-get install python-scipy")
+  print("This script requires scipy be available.")
+  print("On Ubuntu: sudo apt-get install python-scipy")
   exit(1)
 
 # Plots are optional
@@ -30,7 +28,7 @@ except ImportError:
 parser = ArgumentParser(description='Process UM6 bag file for compass calibration. Pass a bag containing /imu/rpy and /imu/mag topics, with the UM6 compass facing upright, being slowly rotated in a clockwise direction for 30-120 seconds.')
 parser.add_argument('bag', metavar='FILE', type=str, help='input bag file')
 parser.add_argument('outfile', metavar='OUTFILE', type=str, help='output yaml file',
-                    nargs="?", default="/tmp/um6_calibration.yaml")
+                    nargs="?", default="/tmp/calibration.yaml")
 parser.add_argument('--plots', type=bool, help='Show plots if matplotlib available.')
 args = parser.parse_args()
 
@@ -41,8 +39,8 @@ bag = rosbag.Bag(args.bag)
 imu_rot = Quaternion(0,0,0,1) 
 transform_found = False
 for topic, msg, time in bag.read_messages(topics=("/tf", "/tf")):
-	for c_trans in msg.transforms:
-		if (c_trans.header.frame_id == "/base_link" and c_trans.child_frame_id == "/imu_link"):
+        for c_trans in msg.transforms:
+		if ("base_link" in c_trans.header.frame_id and "imu_link" in c_trans.child_frame_id):
 			imu_rot = c_trans.transform.rotation
 			transform_found = True
 			break
@@ -56,7 +54,7 @@ t_mat = matrix(t_array)
 t_mat = t_mat.I
 
 if (not transform_found):
-	rospy.logwarn("Transform between base_link and imu_link not found, assuming unity")
+	print("Transform between base_link and imu_link not found, assuming unity")
 
 time_yaw_tuples = []
 for topic, msg, time in bag.read_messages(topics=("/imu/rpy", "imu/rpy")):	
@@ -67,7 +65,7 @@ for topic, msg, time in bag.read_messages(topics=("/imu/rpy", "imu/rpy")):
 	
 
 if len(time_yaw_tuples) < 100:
-  rospy.logfatal("Insufficient data or no data in bag file. Looking for topic /imu/rpy.")
+  print("Insufficient data or no data in bag file. Looking for topic /imu/rpy.")
   exit(1)
 
 
@@ -100,7 +98,7 @@ for topic, msg, time in bag.read_messages(topics=("/imu/mag", "imu/mag")):
 	t_msg = t_mat*o_msg
 	vecs.append((float(t_msg[0]), float(t_msg[1]), float(t_msg[2])))
 
-rospy.loginfo("Using data from %d to %d (%d seconds), or %d samples.", time_start, time_end, time_end - time_start, len(vecs))
+print ("Using data from " + str(time_start) +" to " + str (time_end) + "(" + str(time_end - time_start) + " seconds), or " + str(len(vecs)) + " samples.")
 
 def calc_R(xc, yc):
     """ calculate the distance of each 2D points from the center (xc, yc) """
@@ -123,7 +121,7 @@ circle_points = (center[0] + cos(a) * radius,
                  center[1] + sin(a) * radius, 
                  center[2] * ones(len(a)))
 
-rospy.loginfo("Magnetic circle centered at " + str(center) + ", with radius " + str(radius))
+print("Magnetic circle centered at " + str(center) + ", with radius " + str(radius))
 
 with open(args.outfile, "w") as f:
   f.write("# Generated from %s on %s.\n" % (args.bag, datetime.date.today()))
@@ -132,7 +130,7 @@ with open(args.outfile, "w") as f:
   f.write("mag_zero_z: %f\n" % center[2])
   f.write("mag_zero_radius: %f\n" % radius)
 
-rospy.loginfo("Calibration file written to %s", args.outfile)
+print("Calibration file written to " + args.outfile)
 
 if pyplot:
   ax2 = fig.add_subplot(212, projection='3d')
