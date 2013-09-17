@@ -1,5 +1,5 @@
 <launch>
-<rosparam command="load" file="$(find imu_compass)/config/test.yaml"/>
+<rosparam command="load" file="$(find imu_compass)/config/imu_compass.yaml"/>
 <node pkg="imu_compass" type="imu_compass" name="imu_compass" output="screen" respawn="true"/>
 </launch>
 

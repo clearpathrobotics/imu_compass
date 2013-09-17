@@ -125,10 +125,11 @@ print("Magnetic circle centered at " + str(center) + ", with radius " + str(radi
 
 with open(args.outfile, "w") as f:
   f.write("# Generated from %s on %s.\n" % (args.bag, datetime.date.today()))
-  f.write("mag_zero_x: %f\n" % center[0])
-  f.write("mag_zero_y: %f\n" % center[1])
-  f.write("mag_zero_z: %f\n" % center[2])
-  f.write("mag_zero_radius: %f\n" % radius)
+  f.write("mag_bias:\n")
+  f.write("     x: %f\n" % center[0])
+  f.write("     y: %f\n" % center[1])
+  f.write("     z: %f\n" % center[2])
+  f.write("     radius: %f\n" % radius)
 
 print("Calibration file written to " + args.outfile)
 

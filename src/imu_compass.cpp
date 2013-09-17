@@ -6,9 +6,10 @@ IMUCompass::IMUCompass(ros::NodeHandle &n):node_(n)
 	mag_zero_x_ = 0.0;
 	mag_zero_y_ = 0.0;
 	mag_zero_z_ = 0.0;
-	node_.getParam("mag_zero_x",mag_zero_x_); 
-	node_.getParam("mag_zero_y",mag_zero_y_);
-	node_.getParam("mag_zero_z",mag_zero_z_);	
+	node_.getParam("mag_bias/x",mag_zero_x_); 
+	node_.getParam("mag_bias/y",mag_zero_y_);
+	node_.getParam("mag_bias/z",mag_zero_z_);	
+  ROS_INFO("Using magnetometer bias (x,y):%f,%f",mag_zero_x_, mag_zero_y_);
 
 	sensor_timeout_ = 0.5;
 	yaw_meas_variance_ = 0.5; //TODO: Make this tunable as a parameter, not a priority
