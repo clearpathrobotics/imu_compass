@@ -34,6 +34,8 @@ Header file for IMU Compass Class that combines gyroscope and magnetometer data 
 
 #define PI 3.14159
 
+//typedef boost::shared_ptr<sensor_msgs::Imu const> ImuConstPtr;
+
 class IMUCompass {
 
 private:
@@ -47,7 +49,7 @@ private:
 	tf::TransformListener listener_;
 	ros::Timer debug_timer_;
 
-	void imuCallback(const sensor_msgs::ImuConstPtr& data);
+  void imuCallback(sensor_msgs::ImuPtr data);
 	void magCallback(const geometry_msgs::Vector3StampedConstPtr& data);
 	void debugCallback(const ros::TimerEvent&);
 	void repackageImuPublish(tf::StampedTransform);
@@ -61,10 +63,9 @@ private:
 
 	double mag_zero_x_, mag_zero_y_, mag_zero_z_;
 
-	sensor_msgs::Imu curr_imu_reading_;
+  sensor_msgs::ImuPtr curr_imu_reading_;
 
 	//Heading Filter Variables
-
 	//State and Variance
 	double curr_heading_;
 	double curr_heading_variance_;
