@@ -181,7 +181,7 @@ void IMUCompass::magCallback(const geometry_msgs::Vector3StampedConstPtr& data) 
   if (gyro_update_complete_) {
     double kalman_gain = heading_variance_prediction_* (1/(heading_variance_prediction_ + yaw_meas_variance_)); //K = Sp*C'*inv(C*Sp*C' + Q)
     double innovation = heading_meas - heading_prediction_;
-    if (abs(innovation) > PI)  //large change, signifies a wraparound. kalman filters don't like discontinuities like wraparounds, handle seperately.
+    if (abs(innovation) > M_PI)  //large change, signifies a wraparound. kalman filters don't like discontinuities like wraparounds, handle seperately.
       curr_heading_ = heading_meas;
     else
       curr_heading_ =   heading_prediction_ + kalman_gain*(innovation); //mu = mup + K*(y-C*mup)
