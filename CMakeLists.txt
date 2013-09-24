@@ -34,7 +34,11 @@ install(TARGETS imu_compass
   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 
-install(PROGRAMS scripts/compute_calibration.py 
+install(PROGRAMS scripts/compute_calibration
 			DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 
+install(
+  DIRECTORY launch config
+  DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
+)
