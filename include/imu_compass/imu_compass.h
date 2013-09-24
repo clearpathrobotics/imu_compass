@@ -18,7 +18,7 @@ WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWIS
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 Description:
-Header file for IMU Compass Class that combines gyroscope and magnetometer data to get a clean estimate of yaw. 
+Header file for IMU Compass Class that combines gyroscope and magnetometer data to get a clean estimate of yaw.
 */
 
 #include "ros/ros.h"
@@ -79,6 +79,6 @@ private:
 public:
   IMUCompass(ros::NodeHandle &n);
   ~IMUCompass() {
-   }
+  }
 };
 
