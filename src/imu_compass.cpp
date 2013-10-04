@@ -35,8 +35,10 @@ IMUCompass::IMUCompass(ros::NodeHandle &n): node_(n) {
   ROS_INFO("Using magnetometer bias (x,y):%f,%f", mag_zero_x_, mag_zero_y_);
 
   sensor_timeout_ = 0.5;
-  yaw_meas_variance_ = 0.5; // TODO: Make this tunable as a parameter, not a priority
+  yaw_meas_variance_ = 10.0; // TODO: Make this tunable as a parameter, not a priority
   heading_prediction_variance_ = 0.01;
+
+  ROS_INFO("Using variance %f",yaw_meas_variance_);
 
   // Setup Subscribers
   imu_sub_ = node_.subscribe("/imu/data", 1000, &IMUCompass::imuCallback, this);
