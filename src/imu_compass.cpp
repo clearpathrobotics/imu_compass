@@ -36,11 +36,13 @@ IMUCompass::IMUCompass(ros::NodeHandle &n): node_(n) {
 
 
   sensor_timeout_ = 0.5;
-  yaw_meas_variance_ = 0.5;
+  yaw_meas_variance_ = 10.0; 
   heading_prediction_variance_ = 0.01;
   node_.getParam("compass/sensor_timeout", sensor_timeout_);
   node_.getParam("compass/yaw_meas_variance",yaw_meas_variance_);
   node_.getParam("compass/gyro_meas_variance",heading_prediction_variance_);
+
+  ROS_INFO("Using variance %f",yaw_meas_variance_);
 
   // Setup Subscribers
   imu_sub_ = node_.subscribe("/imu/data", 1000, &IMUCompass::imuCallback, this);
