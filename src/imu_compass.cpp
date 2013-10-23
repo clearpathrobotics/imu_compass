@@ -24,7 +24,8 @@ CPP file for IMU Compass Class that combines gyroscope and magnetometer data to 
 
 #include "imu_compass/imu_compass.h"
 
-IMUCompass::IMUCompass(ros::NodeHandle &n): node_(n) {
+IMUCompass::IMUCompass(ros::NodeHandle &n) :
+    node_(n), curr_imu_reading_(new sensor_msgs::Imu()) {
   // Acquire Parameters
   mag_zero_x_ = 0.0;
   mag_zero_y_ = 0.0;
@@ -34,15 +35,14 @@ IMUCompass::IMUCompass(ros::NodeHandle &n): node_(n) {
   node_.getParam("mag_bias/z", mag_zero_z_);
   ROS_INFO("Using magnetometer bias (x,y):%f,%f", mag_zero_x_, mag_zero_y_);
 
-
   sensor_timeout_ = 0.5;
   yaw_meas_variance_ = 10.0; 
   heading_prediction_variance_ = 0.01;
   node_.getParam("compass/sensor_timeout", sensor_timeout_);
-  node_.getParam("compass/yaw_meas_variance",yaw_meas_variance_);
-  node_.getParam("compass/gyro_meas_variance",heading_prediction_variance_);
+  node_.getParam("compass/yaw_meas_variance", yaw_meas_variance_);
+  node_.getParam("compass/gyro_meas_variance", heading_prediction_variance_);
 
-  ROS_INFO("Using variance %f",yaw_meas_variance_);
+  ROS_INFO("Using variance %f", yaw_meas_variance_);
 
   // Setup Subscribers
   imu_sub_ = node_.subscribe("/imu/data", 1000, &IMUCompass::imuCallback, this);
