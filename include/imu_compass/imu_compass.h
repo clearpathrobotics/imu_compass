@@ -37,6 +37,7 @@ private:
   ros::NodeHandle node_;
   ros::Subscriber imu_sub_;
   ros::Subscriber mag_sub_;
+  ros::Subscriber decl_sub_;
   ros::Publisher imu_pub_;
   ros::Publisher compass_pub_;
   ros::Publisher raw_compass_pub_;
@@ -45,6 +46,7 @@ private:
   ros::Timer debug_timer_;
 
   void imuCallback(sensor_msgs::ImuPtr data);
+  void declCallback(const std_msgs::Float32& data);
   void magCallback(const geometry_msgs::Vector3StampedConstPtr& data);
   void debugCallback(const ros::TimerEvent&);
   void repackageImuPublish(tf::StampedTransform);
@@ -70,6 +72,7 @@ private:
   double heading_prediction_;
   double heading_variance_prediction_;
   double heading_prediction_variance_;
+  double mag_declination_;
   double last_motion_update_time_;
   double last_measurement_update_time_;
 
