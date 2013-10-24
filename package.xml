@@ -5,9 +5,7 @@
   <description>Node to combine IMU data (accelerometers and gyroscopes) with Compass data (magnetometers) for a cleaner reading of a Vehicles Heading</description>
   <maintainer email="pmukherj@clearpathrobotics.com">Prasenjit Mukherjee</maintainer>
 
-
   <license>BSD</license>
-
 
   <!-- Example: -->
   <!-- <url type="website">http://ros.org/wiki/imu_compass</url> -->
@@ -21,7 +19,7 @@
   <run_depend>sensor_msgs</run_depend>
   <run_depend>std_msgs</run_depend>
   <run_depend>tf</run_depend>
-
+  <run_depend>python-scipy</run_depend>
 
   <!-- The export tag contains other, unspecified, tags -->
   <export>
