@@ -2,6 +2,13 @@
 Changelog for package imu_compass
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Populate the curr_heading_float message with the declination-corrected heading value.
+* Add declination param and topic input to imu_compass node.
+* Add dependency on scipy for compute script.
+* Initialize curr_imu_reading_ with an empty message to avoid startup segfault.
+
 0.0.2 (2013-10-04)
 ------------------
 * adding rosparams for critical variables
