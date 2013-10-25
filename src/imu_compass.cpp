@@ -212,7 +212,7 @@ void IMUCompass::repackageImuPublish(tf::StampedTransform transform) {
   // Get Current IMU reading and Compass heading
   tf::Quaternion imu_reading;
   tf::quaternionMsgToTF(curr_imu_reading_->orientation, imu_reading);
-  double compass_heading = curr_heading_ + mag_declination_;
+  double compass_heading = curr_heading_ - mag_declination_;
 
   // Transform curr_imu_reading to base_link
   tf::Transform o_imu_reading;
