@@ -235,7 +235,7 @@ void IMUCompass::repackageImuPublish(tf::StampedTransform transform) {
 
   // Publish all data
   std_msgs::Float32 curr_heading_float;
-  curr_heading_float.data = curr_heading_;
+  curr_heading_float.data = compass_heading;
   compass_pub_.publish(curr_heading_float);
   imu_pub_.publish(curr_imu_reading_);
 }
