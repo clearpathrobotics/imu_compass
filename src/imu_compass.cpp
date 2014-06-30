@@ -24,27 +24,26 @@ CPP file for IMU Compass Class that combines gyroscope and magnetometer data to 
 
 #include "imu_compass/imu_compass.h"
 
+double magn(tf::Vector3 a) {
+      return sqrt(a.x()*a.x() + a.y()*a.y() + a.z()*a.z());
+}
+
 IMUCompass::IMUCompass(ros::NodeHandle &n) :
     node_(n), curr_imu_reading_(new sensor_msgs::Imu()) {
   // Acquire Parameters
-  mag_zero_x_ = 0.0;
-  mag_zero_y_ = 0.0;
-  mag_zero_z_ = 0.0;
-  node_.getParam("mag_bias/x", mag_zero_x_);
-  node_.getParam("mag_bias/y", mag_zero_y_);
-  node_.getParam("mag_bias/z", mag_zero_z_);
+  ros::param::param("~mag_bias/x", mag_zero_x_, 0.0);
+  ros::param::param("~mag_bias/y", mag_zero_y_, 0.0);
+  ros::param::param("~mag_bias/z", mag_zero_z_, 0.0);
+
+
   ROS_INFO("Using magnetometer bias (x,y):%f,%f", mag_zero_x_, mag_zero_y_);
 
-  sensor_timeout_ = 0.5;
-  yaw_meas_variance_ = 10.0; 
-  heading_prediction_variance_ = 0.01;
-  node_.getParam("compass/sensor_timeout", sensor_timeout_);
-  node_.getParam("compass/yaw_meas_variance", yaw_meas_variance_);
-  node_.getParam("compass/gyro_meas_variance", heading_prediction_variance_);
+  ros::param::param("~compass/sensor_timeout", sensor_timeout_, 0.5);
+  ros::param::param("~compass/yaw_meas_variance", yaw_meas_variance_, 10.0);
+  ros::param::param("~compass/gyro_meas_variance", heading_prediction_variance_, 0.01);
   ROS_INFO("Using variance %f", yaw_meas_variance_);
 
-  mag_declination_ = 0.0;
-  node_.getParam("compass/mag_declination", mag_declination_);
+  ros::param::param("~compass/mag_declination", mag_declination_, 0.0);
   ROS_INFO("Using magnetic declination %f (%f degrees)", mag_declination_, mag_declination_ * 180 / M_PI);
 
   // Setup Subscribers
@@ -158,13 +157,20 @@ void IMUCompass::magCallback(const geometry_msgs::Vector3StampedConstPtr& data) 
   double mag_y = imu_mag_transformed.y - mag_zero_y_;
   double mag_z = imu_mag_transformed.z; // calibration is purely 2D
 
+  //Normalize vector
+  tf::Vector3 calib_mag(mag_x,mag_y, mag_z);
+  calib_mag = calib_mag/magn(calib_mag);
+  mag_x = calib_mag.x();
+  mag_y = calib_mag.y();
+  mag_z = calib_mag.z();
+
   geometry_msgs::Vector3Stamped calibrated_mag;
   calibrated_mag.header.stamp = ros::Time::now();
   calibrated_mag.header.frame_id = "imu_link";
 
-  calibrated_mag.vector.x = mag_x;
-  calibrated_mag.vector.y = mag_y;
-  calibrated_mag.vector.z = mag_z;
+  calibrated_mag.vector.x = calib_mag.x();
+  calibrated_mag.vector.y = calib_mag.y();
+  calibrated_mag.vector.z = calib_mag.z();
 
   mag_pub_.publish(calibrated_mag);
 
