@@ -53,6 +53,8 @@ IMUCompass::IMUCompass(ros::NodeHandle &n) :
   decl_sub_ = node_.subscribe("imu/declination", 1000, &IMUCompass::declCallback, this);
   imu_pub_ = node_.advertise<sensor_msgs::Imu>("imu/data_compass", 1);
   compass_pub_ = node_.advertise<std_msgs::Float32>("imu/compass_heading", 1);
+  mag_pub_ = node_.advertise<geometry_msgs::Vector3Stamped>("imu/mag_calib", 1);
+
   raw_compass_pub_ = node_.advertise<std_msgs::Float32>("imu/raw_compass_heading", 1);
 
   first_mag_reading_ = false;
@@ -155,6 +157,16 @@ void IMUCompass::magCallback(const geometry_msgs::Vector3StampedConstPtr& data) 
   double mag_x = imu_mag_transformed.x - mag_zero_x_;
   double mag_y = imu_mag_transformed.y - mag_zero_y_;
   double mag_z = imu_mag_transformed.z; // calibration is purely 2D
+
+  geometry_msgs::Vector3Stamped calibrated_mag;
+  calibrated_mag.header.stamp = ros::Time::now();
+  calibrated_mag.header.frame_id = "imu_link";
+
+  calibrated_mag.vector.x = mag_x;
+  calibrated_mag.vector.y = mag_y;
+  calibrated_mag.vector.z = mag_z;
+
+  mag_pub_.publish(calibrated_mag);
 
   tf::Quaternion q;
   tf::quaternionMsgToTF(curr_imu_reading_->orientation, q);

@@ -39,6 +39,7 @@ private:
   ros::Subscriber mag_sub_;
   ros::Subscriber decl_sub_;
   ros::Publisher imu_pub_;
+  ros::Publisher mag_pub_;
   ros::Publisher compass_pub_;
   ros::Publisher raw_compass_pub_;
 
