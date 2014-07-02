@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package>
   <name>imu_compass</name>
-  <version>0.0.3</version>
+  <version>0.0.4</version>
   <description>Node to combine IMU data (accelerometers and gyroscopes) with Compass data (magnetometers) for a cleaner reading of a Vehicles Heading</description>
   <maintainer email="pmukherj@clearpathrobotics.com">Prasenjit Mukherjee</maintainer>
 

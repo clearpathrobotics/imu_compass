@@ -2,8 +2,8 @@
 Changelog for package imu_compass
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.0.4 (2014-07-02)
+------------------
 * successful test with kingfisher June 30 2014
 * adding the publishing of calibrated magnetometer data for debug purposes
 * Contributors: Mike Purvis, Prasenjit Mukherjee
