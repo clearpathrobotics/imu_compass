@@ -71,13 +71,13 @@ void IMUCompass::debugCallback(const ros::TimerEvent&) {
   if (!first_mag_reading_)
     ROS_WARN("Waiting for mag data, no magnetometer data available, Filter not initialized");
 
-  if ((ros::Time::now().toSec() - last_motion_update_time_ > sensor_timeout_) && first_gyro_reading_) { 
+  if ((ros::Time::now().toSec() - last_motion_update_time_ > sensor_timeout_) && first_gyro_reading_) {
     // gyro data is coming in too slowly
     ROS_WARN("Gyroscope data being receieved too slow or not at all");
     first_gyro_reading_ = false;
   }
 
-  if ((ros::Time::now().toSec() - last_measurement_update_time_ > sensor_timeout_) && first_mag_reading_) { 
+  if ((ros::Time::now().toSec() - last_measurement_update_time_ > sensor_timeout_) && first_mag_reading_) {
     // gyro data is coming in too slowly
     ROS_WARN("Magnetometer data being receieved too slow or not at all");
     filter_initialized_ = false;
@@ -155,11 +155,11 @@ void IMUCompass::magCallback(const geometry_msgs::Vector3StampedConstPtr& data) 
   // Compensate for hard iron
   double mag_x = imu_mag_transformed.x - mag_zero_x_;
   double mag_y = imu_mag_transformed.y - mag_zero_y_;
-  double mag_z = imu_mag_transformed.z; // calibration is purely 2D
+  double mag_z = imu_mag_transformed.z;  // calibration is purely 2D
 
-  //Normalize vector
-  tf::Vector3 calib_mag(mag_x,mag_y, mag_z);
-  calib_mag = calib_mag/magn(calib_mag);
+  // Normalize vector
+  tf::Vector3 calib_mag(mag_x, mag_y, mag_z);
+  calib_mag = calib_mag / magn(calib_mag);
   mag_x = calib_mag.x();
   mag_y = calib_mag.y();
   mag_z = calib_mag.z();
@@ -208,7 +208,7 @@ void IMUCompass::magCallback(const geometry_msgs::Vector3StampedConstPtr& data) 
   // If gyro update (motion update) is complete, run measurement update and publish imu data
   if (gyro_update_complete_) {
     // K = Sp*C'*inv(C*Sp*C' + Q)
-    double kalman_gain = heading_variance_prediction_ * (1 / (heading_variance_prediction_ + yaw_meas_variance_)); 
+    double kalman_gain = heading_variance_prediction_ * (1 / (heading_variance_prediction_ + yaw_meas_variance_));
     double innovation = heading_meas - heading_prediction_;
     if (abs(innovation) > M_PI)  // large change, signifies a wraparound. kalman filters don't like discontinuities like wraparounds, handle seperately.
       curr_heading_ = heading_meas;
