@@ -2,6 +2,12 @@
 Changelog for package imu_compass
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* successful test with kingfisher June 30 2014
+* adding the publishing of calibrated magnetometer data for debug purposes
+* Contributors: Mike Purvis, Prasenjit Mukherjee
+
 0.0.3 (2013-10-24)
 ------------------
 * Populate the curr_heading_float message with the declination-corrected heading value.
