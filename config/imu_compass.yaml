@@ -1,4 +1,4 @@
-# Generated from /home/pmukherj/yaw_90.bag on 2013-09-17.
+# Sample set of values. Please generate your own values using the compute_calibration script included in this package
 mag_bias:
      x: 0.183117
      y: 0.273127
