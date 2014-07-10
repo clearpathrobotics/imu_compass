@@ -2,6 +2,12 @@
 Changelog for package imu_compass
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* removing bag references from sample hard-iron calibration output file
+* fixing example launch file to reflect changes in param intake in the node
+* Contributors: Prasenjit Mukherjee
+
 0.0.4 (2014-07-02)
 ------------------
 * successful test with kingfisher June 30 2014
