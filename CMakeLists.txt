@@ -5,6 +5,8 @@ find_package(catkin REQUIRED COMPONENTS geometry_msgs sensor_msgs std_msgs tf)
 
 catkin_package()
 
+add_definitions(-std=c++11)
+
 include_directories(include
   ${catkin_INCLUDE_DIRS}
 )

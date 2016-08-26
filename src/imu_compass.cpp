@@ -23,8 +23,6 @@ CPP file for IMU Compass Class that combines gyroscope and magnetometer data to 
 */
 
 #include "imu_compass/imu_compass.h"
-// For isnan()
-#include "boost/math/special_functions/fpclassify.hpp"
 
 double magn(tf::Vector3 a) {
       return sqrt(a.x()*a.x() + a.y()*a.y() + a.z()*a.z());
@@ -137,9 +135,9 @@ void IMUCompass::magCallback(const geometry_msgs::Vector3StampedConstPtr& data) 
   geometry_msgs::Vector3 imu_mag_transformed;
 
   // Check for nans and bail
-  if ( boost::math::isnan(data->vector.x) ||
-       boost::math::isnan(data->vector.y) ||
-       boost::math::isnan(data->vector.z) ) {
+  if ( std::isnan(data->vector.x) ||
+       std::isnan(data->vector.y) ||
+       std::isnan(data->vector.z) ) {
     return;
   }
 
