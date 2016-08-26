@@ -5,6 +5,10 @@ find_package(catkin REQUIRED COMPONENTS geometry_msgs sensor_msgs std_msgs tf)
 
 catkin_package()
 
+if(NOT WIN32)
+  set_directory_properties(PROPERTIES COMPILE_OPTIONS "-std=c++11")
+endif()
+
 include_directories(include
   ${catkin_INCLUDE_DIRS}
 )

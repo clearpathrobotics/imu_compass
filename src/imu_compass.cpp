@@ -134,6 +134,13 @@ void IMUCompass::magCallback(const geometry_msgs::Vector3StampedConstPtr& data) 
   geometry_msgs::Vector3 imu_mag = data->vector;
   geometry_msgs::Vector3 imu_mag_transformed;
 
+  // Check for nans and bail
+  if ( std::isnan(data->vector.x) ||
+       std::isnan(data->vector.y) ||
+       std::isnan(data->vector.z) ) {
+    return;
+  }
+
   imu_mag.x = data->vector.x;
   imu_mag.y = data->vector.y;
   imu_mag.z = data->vector.z;
