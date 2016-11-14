@@ -35,6 +35,7 @@ class IMUCompass {
 
 private:
   ros::NodeHandle node_;
+  ros::NodeHandle private_node_;
   ros::Subscriber imu_sub_;
   ros::Subscriber mag_sub_;
   ros::Subscriber decl_sub_;
@@ -59,6 +60,8 @@ private:
   bool filter_initialized_; //after receiving the first measurement, make sure the filter is initialized
   bool gyro_update_complete_; //sigfnifies that a gyro update (motion model update) has gone through
 
+  std::string base_frame_;
+
   double mag_zero_x_, mag_zero_y_, mag_zero_z_;
 
   sensor_msgs::ImuPtr curr_imu_reading_;
@@ -81,8 +84,7 @@ private:
   double yaw_meas_variance_;
 
 public:
-  IMUCompass(ros::NodeHandle &n);
+  IMUCompass(ros::NodeHandle &n, ros::NodeHandle &pn);
   ~IMUCompass() {
   }
 };
-
